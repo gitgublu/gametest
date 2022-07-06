@@ -82,7 +82,6 @@ minetest.register_node("morenodes:plant5",{
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
-	buildable_to = true,
 	on_construct=function(pos)
 		minetest.get_node_timer(pos):start(1)
 	end,
@@ -111,7 +110,6 @@ for i,ii in pairs(metas)do
 			paramtype = "light",
 			sunlight_propagates = true,
 			walkable = false,
-			buildable_to = true,
 			drop=ii,
 			on_construct=function(pos)
 				minetest.get_node_timer(pos):start(60)
