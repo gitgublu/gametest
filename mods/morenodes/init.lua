@@ -92,6 +92,7 @@ minetest.register_node("morenodes:plant5",{
 	after_dig_node=function(pos)
 		minetest.add_item(pos, "morenodes:foin")
 		minetest.add_item(pos,"morenodes:plant1")
+		minetest.add_item(pos,"morenodes:plant1")
 	end,
 	drop="",
 	groups = {snappy=3}
