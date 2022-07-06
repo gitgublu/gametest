@@ -1,0 +1,33 @@
+{
+	"mapblock_count" : 90.0,
+	"metadata_count" : 7.0,
+	"mtime" : 1634465939.0,
+	"next_id" : 21.0,
+	"node_mapping" : 
+	{
+		"air" : 2.0,
+		"basenodes:dirt" : 3.0,
+		"basenodes:dirt_with_grass" : 1.0,
+		"basenodes:pipi_source" : 7.0,
+		"basenodes:stone" : 0.0,
+		"chest:chest" : 8.0,
+		"morenodes:Fe" : 4.0,
+		"morenodes:Spw" : 16.0,
+		"morenodes:WC" : 11.0,
+		"morenodes:earth" : 17.0,
+		"morenodes:earthspw" : 18.0,
+		"morenodes:glass" : 6.0,
+		"morenodes:gotomine" : 12.0,
+		"morenodes:meselamp" : 10.0,
+		"morenodes:plant5" : 9.0,
+		"morenodes:rafinery" : 14.0,
+		"morenodes:space" : 5.0,
+		"morenodes:spaceshipfuelore" : 19.0,
+		"morenodes:spaceshipreactor" : 20.0,
+		"morenodes:statuslabel" : 13.0,
+		"pipi:pipi" : 15.0
+	},
+	"size" : 23412.0,
+	"uid" : "f6abb0c3-f5cc-4a4e-b7fc-0456cd503b53",
+	"version" : 2.0
+}
