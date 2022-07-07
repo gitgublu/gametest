@@ -1,5 +1,5 @@
 local morenodesfuel = 0
-local distance = 100000
+local distance = 100
 local speed = 0
 local is_joinplayer = false
 local newpl = nil
@@ -10,7 +10,8 @@ minetest.register_on_respawnplayer(function(player)
 	spawned=false
 	is_joinplayer=true
 	newpl=player
-	minetest:chat_send_player(player,"vous êtes mort! votre progression a été REINITIALISEE!!!")
+	print(player:get_player_name())
+	minetest.chat_send_player(player:get_player_name(),"vous êtes mort! votre progression a été REINITIALISEE!!!")
 end)
 minetest.register_on_joinplayer(function(player)
 	spawned=false
@@ -68,7 +69,7 @@ minetest.register_node("morenodes:Spw",{
 	--groups = {snappy=3}
 })
 minetest.register_on_joinplayer(function(player)
-	minetest.show_formspec(player:get_player_name(), "morenodes:hello", "formspec_version[4]size[10,10]label[0,0.3;Bienvenue dans votre vesseau spatiale! vous devez]label[0,0.8;retourner sur Terre. Pour ce faire, vous devez produire]label[0,1.3;du bio carburant à base de plantes. Utilisez]label[0,1.8;la rafinerie pour cela. Ensuite, introduisez le carburant]label[0,2.3;dans les réacteurs. Vous devez manger pour régénérer]label[0,2.8;vos vies qui disparaissent régulièrement.Les bessoins humains]label[0,3.3;vous obligent à aller aux toilettes régulièrement.]label[0,3.8;Vous pouvez fabriquer des rafineries en minant]label[0,4.3;dans l'astéroïd. le craft consiste à mettre les]label[0,4.8;morceaux d'astéroïdes en carré (comme pour un four)]label[0,5.3;votre distance à la terre s'affiche sur le tableau de bord.]label[0,5.8;Bonne chance !]button_exit[3.5,9;3,1;quit;ok]")
+	minetest.show_formspec(player:get_player_name(), "morenodes:hello", "formspec_version[4]size[10,10]label[0,0.3;Bienvenue dans votre vesseau spatiale! vous devez]label[0,0.8;retourner sur Terre. Pour ce faire, vous devez produire]label[0,1.3;du bio carburant à base de plantes. Utilisez]label[0,1.8;la rafinerie pour cela. Ensuite, introduisez le carburant]label[0,2.3;dans les réacteurs. Vous devez manger pour régénérer]label[0,2.8;vos vies qui disparaissent régulièrement.Les bessoins humains]label[0,3.3;vous obligent à aller aux toilettes régulièrement.]label[0,3.8;Vous pouvez fabriquer des rafineries en minant]label[0,4.3;dans l'astéroïd. le craft consiste à mettre les]label[0,4.8;morceaux d'astéroïdes en carré (comme pour un four)]label[0,5.3;votre distance à la terre s'affiche sur le tableau de bord.]label[0,5.8;Ha, j'oubliais, pour activer la combustion des réacteurs,]label[0,6.3;vous devez utiliser le tableau de bord. Bonne chance]button_exit[3.5,9;3,1;quit;ok]")
 end)
 minetest.register_node("morenodes:foin",{
 	description = "foin destinée à la fabrication de biocarburant",
@@ -129,6 +130,7 @@ end
 minetest.register_node("morenodes:spaceshipfuel",{
 	description = "carburant",
 	tiles = {"morenodes_spaceshipfuel.png"},
+	stack_max = 1,
 	groups = {snappy=3}
 })
 minetest.register_node("morenodes:rafinery",{
@@ -196,16 +198,21 @@ minetest.register_node("morenodes:rafinery",{
 		return true
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
-		if fields.go then
+		local meta = minetest.get_meta(pos)
+		if (fields.go and (meta:get_int("go")~=1)) then
 			local meta = minetest.get_meta(pos)
-			meta:set_int("go",1)
-			meta:set_string("formspec",
-			"size[8,9]"..
-			"list[current_name;main;0,0;8,4;]"..
-			"list[current_player;main;0,5;8,4;]" ..
-			"listring[]"..
-			"button[3.5,3.5;2,2;go;rafinage...]")
-			meta:set_string("infotext", "rafinage...")
+			local inv=meta:get_inventory()
+			local stk=inv:get_stack("main", 1)
+			if ((stk:get_name()=="morenodes:foin") and (stk:get_count()==1))then
+				meta:set_int("go",1)
+				meta:set_string("formspec",
+				"size[8,9]"..
+				"list[current_name;main;0,0;8,4;]"..
+				"list[current_player;main;0,5;8,4;]" ..
+				"listring[]"..
+				"button[3.5,3.5;2,2;go;rafinage...]")
+				meta:set_string("infotext", "rafinage...")
+			end
 		end
 	end,
 	groups = {snappy=3}
@@ -278,7 +285,7 @@ minetest.register_node("morenodes:gotomine",{
 		meta:set_string("formspec",
 		"formspec_version[4]"..
 		"size[4,4]"..
-		"button[0,0;4,4;go;aller à la mine]"
+		"button[0,0;4,4;go;voyager]"
 		)
 		meta:set_string("infotext", "cliquez pour voyager")
 		if telpposun.x then
@@ -339,7 +346,6 @@ minetest.register_node("morenodes:statuslabel",{
 			end
 		end
 		if is_joinplayer then
-			minetest.chat_send_player("singleplayer","load...")
 			distance = meta:get_int("distance")
 			speed = meta:get_int("speed")
 			morenodesfuel = meta:get_int("carburant")
@@ -350,10 +356,17 @@ minetest.register_node("morenodes:statuslabel",{
 				is_joinplayer=false
 			end
 		end
-		distance=distance-(speed/50)
+		distance=distance-(speed*10)
 		meta:set_int("distance",distance)
 		meta:set_int("speed",speed)
 		meta:set_int("carburant",morenodesfuel)
+		if distance<1 then
+			for index , player in pairs(minetest.get_connected_players()) do
+				player:set_pos({x=14,y=13.5,z=10})
+				minetest.show_formspec(player:get_player_name(), "morenodes:bravo", "formspec_version[4]size[10,10]label[0,0.3;Bravo ! Vous voilà sur Terre !]button[3.5,3.5;2,2;go;Rejouer]")
+			end
+			distance=100000
+		end
 		return true
 	end,
 	on_receive_fields = function(pos, formname, fields, sender)
@@ -363,6 +376,9 @@ minetest.register_node("morenodes:statuslabel",{
 		end
 	end
 })
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	player:set_hp(0,{})
+end)
 minetest.register_node("morenodes:spaceshipfuelore",{
 	description = "minerai de carburant",
 	tiles={"morenodes_spaceshipfuelore.png"},
@@ -389,18 +405,5 @@ minetest.register_node("morenodes:earth", {
 minetest.register_node("morenodes:earthspw", {
 	description = "spawn de la Terre",
 	tiles = {"morenodes_earth.png"},
-	on_construct=function(pos)
-		local meta = minetest.get_meta(pos)
-		minetest.get_node_timer(pos):start(5)
-	end,
-	on_timer=function(pos)
-		if distance<1 then
-			for index , player in pairs(minetest.get_connected_players()) do
-				player:set_pos(pos)
-			end
-		end
-		return true
-	end
-	
 })
 

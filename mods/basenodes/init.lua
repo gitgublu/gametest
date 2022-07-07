@@ -11,6 +11,7 @@ minetest.register_node("basenodes:pipi_source", {
 	drawtype = "liquid",
 	waving = 3,
 	tiles = {"default_pipi.png"..WATER_ALPHA},
+	stack_max = 1,
 	special_tiles = {
 		{name = "default_pipi.png"..WATER_ALPHA, backface_culling = false},
 		{name = "default_pipi.png"..WATER_ALPHA, backface_culling = true},

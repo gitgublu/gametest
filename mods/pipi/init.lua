@@ -5,7 +5,7 @@ minetest.register_node("pipi:pipi",{
 	on_timer = function(pos)
 		for index , player in pairs(minetest.get_connected_players()) do
 			local inv = player.get_inventory(player)
-			inv:add_item("main", "basenodes:pipi_source 99")
+			inv:add_item("main", "basenodes:pipi_source 1")
 			player:set_hp(player:get_hp()-1,{})
 		end
 		return true
